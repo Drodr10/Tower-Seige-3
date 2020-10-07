@@ -12,8 +12,10 @@ var hexagonimg, hexagon;
 var sling;
 var gamestate;
 var score = 0;
+var bg;
 function preload() {
   hexagonimg = loadImage("hex.jpeg");
+  getBackgroundImg();
 }
 function setup() {
   engine = Engine.create();
@@ -51,7 +53,9 @@ console.log(sling);
 }
 
 function draw() {
-  background(255); 
+  if(bg === 0 || bg === 255)
+  background(bg);
+
   Engine.update(engine); 
 
   text("Score: "+score, 700, 40)
@@ -125,4 +129,19 @@ function keyPressed()
       gamestate = ON;
       Matter.Body.setPosition(this.hexagon,{x: 200, y: 200});
     }
+}
+
+async function getBackgroundImg(){
+  var response = await fetch("http://worldtimeapi.org/api/timezone/America/New_York");
+  var responseJSON = await response.json();
+
+  var datetime = responseJSON.datetime;
+  var hour = datetime.slice(11,13);
+  
+  if(hour>= 6 && hour<=19){
+      bg = 255;
+  }
+  else{
+      bg = 0;
+  }
 }
